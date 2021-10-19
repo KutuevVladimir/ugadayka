@@ -1,45 +1,58 @@
 ﻿// ReSharper disable all
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebApiExample.Models;
 
 namespace WebApiExample.Controllers
 {
-    public record RoomDescription(int Id, string Name, int PlayersCount, int MaxPlayersCount, bool RequiresPassword);
-
-    public record Player(int UserId, string NickName);
-
-    public record Room(RoomDescription Description, Player[] Players, string[] Songs);
-
+    
     [ApiController]
     [Route("[controller]")]
     public class RoomsController : ControllerBase
+    
     {
-        private static readonly Room[] Rooms =
+
+        public record RoomDescription(int Id, string Name, int PlayersCount, int MaxPlayersCount, bool RequiresPassword);
+
+        public record PlayerWrapper(int UserId, string NickName);
+
+        public record RoomWrapper(RoomDescription Description, PlayerWrapper[] Players, DataModels.Track[] songs);
+        
+        private readonly ApplicationDbContext _context;
+
+        public RoomsController(ApplicationDbContext context)
         {
-            new(new(0, "Угадай мелодию c F#", 5, 10, true),
-                new[] { new Player(1, "Alex Berezhnykh") },
-                new[] { "Гой еси, Нойзс МС", "Любимая песня твоей сестры" }),
-
-            new(new(1, "Бременские музыканты", 10, 10, false),
-                new[] { new Player(1, "Alex Berezhnykh") },
-                new[] { "Гой еси, Нойзс МС", "Любимая песня твоей сестры" }),
-
-            new(new(2, "Беременные практиканты", 1, 10, false),
-                new[]
-                {
-                    new Player(1, "DedSec256"),
-                    new Player(2, "Чебуратор5000"),
-                    new Player(3, "Николай Басков"),
-                    new Player(4, "Оксана Миронова"),
-                },
-                new[] { "Гой еси, Нойзс МС", "Любимая песня твоей сестры", "Breaking the waves", "Cadillac" })
-        };
+            _context = context;
+        }
 
         [HttpGet]
-        public RoomDescription[] GetAll() => Rooms.Select(t => t.Description).ToArray();
+        public IEnumerable<RoomDescription> GetAll() => _context.Rooms.Select(room => new RoomDescription(room.RoomId, room.Name, 1, room.MaxPlayers, room.RequiresPassword)).ToArray();
 
         [HttpGet("{roomId:int}")]
-        public Room Get(int roomId) => Rooms[roomId];
+        public RoomWrapper Get(int roomId)
+        {
+            var room = _context.Rooms.Where(room => room.RoomId == roomId).Include(room => room.Players).First();
+            
+            PlayerWrapper[] players = room.Players.Select(player => new PlayerWrapper(player.PlayerId,player.DisplayName)).ToArray();
+            
+            var roomDescriprion =
+                new RoomDescription(room.RoomId, room.Name, players.Length, room.MaxPlayers, room.RequiresPassword);
+            
+            
+            DataModels.Track[] tracks = _context.Tracks.Where(
+                track => _context.PlaylistsToTracks.Where(pt => 
+                        pt.PlaylistId == (_context.Rooms.Where(room => room.RoomId == roomId).Select(room => 
+                            room.Playlist.PlaylistId).First()
+                        ))
+                    .Select(pt => pt.TrackId).Contains(track.TrackId)).ToArray();
+            
+            return new RoomWrapper(roomDescriprion, players, tracks);
+            
+        }
     }
 }

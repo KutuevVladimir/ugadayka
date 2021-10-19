@@ -20,10 +20,17 @@ export interface Player {
     nickName: string,
 }
 
+export interface Song {
+    trackId : number,
+    name : string,
+    author : string,
+    url : string
+}
+
 export interface Room {
     description: RoomDescription,
     players: Player[],
-    songs: string[]
+    songs: Song[]
 }
 
 class Api {

@@ -27,7 +27,10 @@ export function RoomComponent() {
                 <table style={{borderStyle: "solid", textAlign: "center"}}>
                     <td><b>Песни</b></td>
                     <tbody>
-                    {roomData.songs.map(x => <tr>{x}</tr>)}
+                    {roomData.songs.map(x => 
+                        <video controls> <source src={x.url}/> </video>
+                    )}
+                    <br></br>
                     </tbody>
                 </table>
             </Gapped>
