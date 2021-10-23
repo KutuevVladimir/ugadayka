@@ -1,4 +1,4 @@
-﻿// ReSharper disable all
+// ReSharper disable all
 
 using System;
 using System.Collections.Generic;
@@ -10,11 +10,11 @@ using WebApiExample.Models;
 
 namespace WebApiExample.Controllers
 {
-    
+
     [ApiController]
     [Route("[controller]")]
     public class RoomsController : ControllerBase
-    
+
     {
 
         public record RoomDescription(int Id, string Name, int PlayersCount, int MaxPlayersCount, bool RequiresPassword);
@@ -22,7 +22,7 @@ namespace WebApiExample.Controllers
         public record PlayerWrapper(int UserId, string NickName);
 
         public record RoomWrapper(RoomDescription Description, PlayerWrapper[] Players, DataModels.Track[] songs);
-        
+
         private readonly ApplicationDbContext _context;
 
         public RoomsController(ApplicationDbContext context)
@@ -37,22 +37,22 @@ namespace WebApiExample.Controllers
         public RoomWrapper Get(int roomId)
         {
             var room = _context.Rooms.Where(room => room.RoomId == roomId).Include(room => room.Players).First();
-            
+
             PlayerWrapper[] players = room.Players.Select(player => new PlayerWrapper(player.PlayerId,player.DisplayName)).ToArray();
-            
+
             var roomDescriprion =
                 new RoomDescription(room.RoomId, room.Name, players.Length, room.MaxPlayers, room.RequiresPassword);
-            
-            
+
+
             DataModels.Track[] tracks = _context.Tracks.Where(
-                track => _context.PlaylistsToTracks.Where(pt => 
-                        pt.PlaylistId == (_context.Rooms.Where(room => room.RoomId == roomId).Select(room => 
+                track => _context.PlaylistsToTracks.Where(pt =>
+                        pt.PlaylistId == (_context.Rooms.Where(room => room.RoomId == roomId).Select(room =>
                             room.Playlist.PlaylistId).First()
                         ))
                     .Select(pt => pt.TrackId).Contains(track.TrackId)).ToArray();
-            
+
             return new RoomWrapper(roomDescriprion, players, tracks);
-            
+
         }
     }
 }

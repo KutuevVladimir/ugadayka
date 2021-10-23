@@ -1,4 +1,4 @@
-﻿// ReSharper disable all
+// ReSharper disable all
 
 using System.Collections.Generic;
 using System.Linq;

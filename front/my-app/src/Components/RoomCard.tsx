@@ -1,4 +1,4 @@
-﻿import {Center, Gapped, Link} from '@skbkontur/react-ui';
+import {Center, Gapped, Link} from '@skbkontur/react-ui';
 import {RoomDescription} from "../Api/Api";
 import React from "react";
 

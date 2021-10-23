@@ -1,5 +1,5 @@
-﻿{
+{
   "ConnectionStrings": {
-    "DefaultConnection": "Server=MySql_server_name; Database=your_database_name; user=****; password=****"
+    "DefaultConnection": "Server=MySql server name, example: localhost; Database=your_database_name, example: testdb; user=****; password=****; SSL Mode=None; CharSet=utf8;"
   }
 }

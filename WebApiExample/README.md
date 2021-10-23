@@ -1,4 +1,4 @@
-﻿# API for music guessing
+# API for music guessing
 
 ---
 ## How to build

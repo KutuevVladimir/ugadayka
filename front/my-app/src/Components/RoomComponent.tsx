@@ -1,4 +1,4 @@
-﻿import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import Api, {Room} from "../Api/Api";
 import {Button, Center, Gapped} from "@skbkontur/react-ui";
