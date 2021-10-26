@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-    baseURL: "http://localhost:5000/rooms",
+    baseURL: "http://localhost:5000",
     headers: {
         "Content-type": "application/json"
     }
@@ -34,8 +34,10 @@ export interface Room {
 }
 
 class Api {
-    getAll = async () => (await axiosClient.get<RoomDescription[]>("/")).data
-    get = async (id: string) => (await axiosClient.get<Room>(`/${id}`)).data
+    getAll = async () => (await axiosClient.get<RoomDescription[]>("/rooms")).data
+    get = async (id: string) => (await axiosClient.get<Room>(`/rooms/${id}`)).data
+    loginOrRegister = async (tokenId: string) => (await axiosClient.post<string>(`/api/auth/google`, tokenId)).data
+    codeAcceptor = async (code: string) => (await axiosClient.post<string>(`/api/auth/google_code`, code)).data
 }
 
 export default new Api();

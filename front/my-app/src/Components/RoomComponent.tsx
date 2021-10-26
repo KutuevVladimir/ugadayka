@@ -8,7 +8,7 @@ export function RoomComponent() {
     const [roomData, setRoomData] = useState<Room | null>(null);
     const history = useHistory()
 
-    useEffect(() => {Api.get(id).then(data => setRoomData(data))}, [])
+    useEffect(() => {Api.get(id).then(data => setRoomData(data))}, [id])
 
     return roomData &&
         <div>
@@ -18,21 +18,16 @@ export function RoomComponent() {
         <Center style={{marginTop: "10px"}}>
             <h1>{roomData.description.name}</h1>
             <Gapped verticalAlign={"top"}>
-                <table style={{borderStyle: "solid", textAlign: "center"}}>
-                    <td><b>Игроки</b></td>
-                    <tbody>
-                    {roomData.players.map(x => <tr>{x.nickName}</tr>)}
-                    </tbody>
-                </table>
-                <table style={{borderStyle: "solid", textAlign: "center"}}>
-                    <td><b>Песни</b></td>
-                    <tbody>
-                    {roomData.songs.map(x => 
-                        <video controls> <source src={x.url}/> </video>
-                    )}
-                    <br></br>
-                    </tbody>
-                </table>
+                <div style={{borderStyle: "solid", textAlign: "center"}}>
+                    <b style={{marginLeft: "100pt", marginRight: "100pt"}}>Игроки</b>
+                    {roomData.players.map(x => <p>{x.nickName}</p>)}
+                </div>
+                <div style={{borderStyle: "solid", textAlign: "center"}}>
+                    <Gapped verticalAlign={"top"} wrap vertical>
+                    <b style={{marginLeft: "100pt", marginRight: "100pt"}}>Песни</b>
+                    {roomData.songs.map(x => <audio key={x.url} controls style={{marginLeft: "10pt", marginRight: "10pt"}}> <source src={x.url}/> </audio> )}
+                    </Gapped>
+                </div>
             </Gapped>
         </Center>
         </div>;

@@ -1,2 +1,2 @@
 #,RoomId,Name,Image,State,MaxPlayers,RequiresPassword,Password,PlayerId,PlaylistId
-1,1,TestRoom,,1,10,0,,1,1
+1,1,TestRoom,,1,10,0,,,1

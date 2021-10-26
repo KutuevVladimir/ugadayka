@@ -7,7 +7,7 @@
 
 ## But first
 
-One needs to configure the databese (currently MySql is used), for this `dotnet-eq` cli tool needs to be installed with 
+One needs to configure the databese (currently MySql is used), for this `dotnet-ef` cli tool needs to be installed with 
 ```bash
 dotnet tool install --global dotnet-ef
 ```
@@ -24,16 +24,24 @@ cp ConnectionStrings.json.template ConntectionStrings.json
 
 Then store this string into `user-secrets` with
 
+[windows]
+
 ```
 dotnet user-secrets init
 type .\ConnectionStrings.json | dotnet user-secrets set
+```
+[linux]
+
+```
+dotnet user-secrets init
+cat ./ConnectionStrings.json | dotnet user-secrets set
 ```
 
 Then you can run
 
 ```bash
 
-dotnet-eq database update
+dotnet-ef database update
 
 ```
 
@@ -45,3 +53,6 @@ dotnet run
 
 ```
 
+## Troubleshoot
+
+If `dotnet-ef database update` exit with an error, try to create a migration script `dotnet-ef migrations script -o migration_script.sql` and apply it manually.

@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using MySql.EntityFrameworkCore.Metadata;
 
 namespace WebApiExample.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class new_migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
