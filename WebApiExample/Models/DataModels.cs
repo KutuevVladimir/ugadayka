@@ -24,6 +24,8 @@ namespace WebApiExample.Models
 
             public byte[] Image { get; set; }
             
+            public bool is_admin { get; set; }
+            
             public ICollection<PlaylistsToLikes> PlaylistsToLikes { get; set; }
         }
 

@@ -5,7 +5,7 @@ insert into Tracks values(2,'(I Just) Died In Your Arms','Cutting Crew','https:/
 insert into Tracks values(3,'Sugar','Maroon 5','https://cdns-preview-0.dzcdn.net/stream/c-05528035755eec7d1fb4807c78972b29-3.mp3');
 insert into Tracks values(4,'Лисий-кисий','Neverlove','https://www.deezer.com/ru/track/1524493952');
 
-insert into Players values(1,null,null,'TestPlayer',null,100,null,null);
+insert into Players values(1,null,null,'TestPlayer',null,100,null, false, null);
 
 insert into Playlists values(1,'TestPlayList',null,1);
 insert into Playlists values(2,'TestPlayList2',null,1);
