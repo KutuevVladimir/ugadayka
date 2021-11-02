@@ -15,6 +15,21 @@ export interface RoomDescription {
     requiresPassword: boolean
 }
 
+export interface TrackDescription {
+    id: number,
+    name: string,
+    author: string,
+    url: string
+}
+
+export interface PlayListDescription {
+    PlaylistId : number,
+    Name: string,
+    Image: string,
+    PlayerId: number,
+    trackIds : number[]
+}
+
 export interface Player {
     userId: number,
     nickName: string,
@@ -32,9 +47,24 @@ export interface Room {
     players: Player[],
     songs: Song[]
 }
-
+export interface DeezerTrackDescription{
+    id: number,
+    title: string,
+    link: string,
+    preview: string,
+    artist: {
+        id: number,
+        name : string,
+    },
+    album: string    
+}
 class Api {
     getAll = async () => (await axiosClient.get<RoomDescription[]>("/rooms")).data
+    getAllTracks = async () => (await axiosClient.get<TrackDescription[]>("/tracks")).data
+    getNewTracks = async (search:string) => 
+        (await axiosClient.get<DeezerTrackDescription[]>(`/api/addtracks/${search}`)).data
+    addTracks = async (data : TrackDescription[]) => (await axiosClient.post<TrackDescription[]>("/tracks", data)).data
+    createPlayList = async (data : PlayListDescription) => (await axiosClient.post<PlayListDescription>("/playlists", data))
     get = async (id: string) => (await axiosClient.get<Room>(`/rooms/${id}`)).data
     loginOrRegister = async (tokenId: string) => (await axiosClient.post<string>(`/api/auth/google`, tokenId)).data
     codeAcceptor = async (code: string) => (await axiosClient.post<string>(`/api/auth/google_code`, code)).data
