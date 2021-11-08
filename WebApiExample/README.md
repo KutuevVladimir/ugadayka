@@ -16,7 +16,7 @@ then
 
 ```bash
 
-cp ConnectionStrings.json.template ConntectionStrings.json
+cp ConnectionStrings.json.template ConnectionStrings.json
 
 ```
 
