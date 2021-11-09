@@ -3,7 +3,6 @@ import config from '../config.json';
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import { Center} from '@skbkontur/react-ui';
 import Api from '../Api/Api';
-import SimpleLogin from './SimpleLogin';
 
 function isOffline(response: GoogleLoginResponse | GoogleLoginResponseOffline): response is GoogleLoginResponseOffline {
     return !! response.code;
@@ -44,13 +43,11 @@ export default function Login(props : { onLogin: () => void}) {
     return (
         <Center>
             <h1>Please Log In</h1>
-            <SimpleLogin/>
             <GoogleLogin
                 clientId={config.GOOGLE_CLIENT_ID}
                 buttonText="Google Login"
                 onSuccess={response => { isOffline(response) ? setCode(response.code) : setTokenId(response.tokenId); }}
                 onFailure={error => { console.error(error) }}
-                //responseType="code"
                 isSignedIn={true}
             />
         </Center>
