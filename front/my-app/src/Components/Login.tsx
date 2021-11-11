@@ -24,10 +24,9 @@ export default function Login(props : { onLogin: () => void}) {
     useEffect(() => {
         if (serverResponse)
             return;
-        if (tokenId)
+        if (tokenId) {
             Api.loginOrRegister(tokenId).then(setter)
-        if (code)
-            Api.codeAcceptor(code).then(setter)
+        }
     });
 
     useEffect(() => {
