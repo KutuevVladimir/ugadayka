@@ -1,45 +1,48 @@
-﻿//GET:https://api.deezer.com/search?q=artist:"aloe blacc" track:"i need a dollar"
+//GET:https://api.deezer.com/search?q=artist:"aloe blacc" track:"i need a dollar"
 
 import React, {useEffect, useState} from "react";
 import Api, {DeezerTrackDescription, PlayListDescription, TrackDescription} from "../Api/Api";
 import {Button, ListGroup} from "react-bootstrap";
 import {TrackCard} from "./TrackCard";
 import {TrackState} from "./TrackBrowser"
-import {Center} from "@skbkontur/react-ui";
+import {Center, Input} from "@skbkontur/react-ui";
+import SearchIcon from '@skbkontur/react-icons/Search';
 import Logout from "./Logout";
 import {DeezerTrackCard} from "./DeezerTrackCard";
 import {Redirect} from "react-router-dom";
 
 export function AddingTrackBrowser(props: { onLogout: () => void }){
     const [tracks, setTracks] = useState<DeezerTrackDescription[]>([]);
-    const [tracksChecked, setTracksChecked] = useState<TrackState[]>([]);
-    let [serverResponse, setServerResponse] = useState<boolean>(false);
+    const [tracksChecked, setTracksChecked] = useState<Set<number>>(new Set());
+    const [tracksCheckedCount, setTracksCheckedCount] = useState(0);
+    const [serverResponse, setServerResponse] = useState<boolean>(false);
     const [isSaved, setIsSaved] = useState<boolean>(false);
+    const [searchString, setSearchString] = useState<string>("");
 
     useEffect(() => {
-        if (serverResponse)
+        if (serverResponse || !searchString)
             return;
-        Api.getNewTracks("lady gaga").then(
+        Api.getNewTracks(searchString).then(
             data => {
                 setServerResponse(true);
                 setTracks(data);
-                setTracksChecked(data.map(x => {
-                    return new TrackState(x.id, false);
-                }));
-            });});
+                data.forEach(value => console.log(value.id));
+            });
+    }, [searchString]);
 
    const checkboxChanged = (index: number)=> {
-       let newArr = tracksChecked.map(x => {
-           if (x.trackId === index) {
-               x.isChecked = !x.isChecked
-           }
-           return x;
-       });
-       setTracksChecked(newArr);
+       if (tracksChecked.has(index)) {
+           tracksChecked.delete(index);
+           setTracksCheckedCount(tracksCheckedCount - 1);
+       } else {
+           tracksChecked.add(index);
+           setTracksCheckedCount(tracksCheckedCount + 1);
+       }
+       setTracksChecked(tracksChecked);
    }
 
-    const onClick = ()=> {    
-       let selected_tracks = tracks.filter(x => (tracksChecked.find(t => t.trackId === x.id) as TrackState).isChecked)
+    const onClick = ()=> {
+       let selected_tracks = tracks.filter(x => (tracksChecked.has(x.id)))
            .map(x => {return {id: x.id, name: x.title, author: x.artist.name, url: x.preview}
        });
        Api.addTracks(selected_tracks).then(r =>{setIsSaved(true);});
@@ -48,18 +51,15 @@ export function AddingTrackBrowser(props: { onLogout: () => void }){
     if(isSaved)
         return (<Redirect to={`/`}/>);
     
-    if (tracks.length) {
-        return <div>
-            <ListGroup>
-                {tracks.map(x => <ListGroup.Item key={x.id}> <DeezerTrackCard track={x} handleChange={checkboxChanged}/></ListGroup.Item>)}
-            </ListGroup>
-            <div className="d-grid gap-2">
-                <Button variant="primary" size="lg" onClick={onClick}>
-                    Add selected tracks
-                </Button>
-
-            </div>
+    return <div>
+        <Input leftIcon={<SearchIcon />} onValueChange={value => {setServerResponse(false); setSearchString(value);}} />
+        <ListGroup>
+            {tracks.map(x => <ListGroup.Item key={x.id}> <DeezerTrackCard track={x} handleChange={checkboxChanged}/></ListGroup.Item>)}
+        </ListGroup>
+        <div className="d-grid gap-2">
+            <Button disabled={!tracksCheckedCount} variant="primary" size="lg" onClick={onClick} >
+                Add selected tracks
+            </Button>
         </div>
-    }
-    return (<Center><h3>Tracks not loaded :(</h3><Logout onLogout={props.onLogout}/></Center>);
+    </div>
 }
