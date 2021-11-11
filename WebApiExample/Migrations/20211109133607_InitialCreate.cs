@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace WebApiExample.Migrations
 {
-    public partial class new_migration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,7 +31,7 @@ namespace WebApiExample.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Image = table.Column<byte[]>(type: "varbinary(4000)", nullable: true),
-                    PlayerId = table.Column<int>(type: "int", nullable: true)
+                    PlayerId = table.Column<string>(type: "varchar(767)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,7 +67,8 @@ namespace WebApiExample.Migrations
                 columns: table => new
                 {
                     PlaylistId = table.Column<int>(type: "int", nullable: false),
-                    PlayerId = table.Column<int>(type: "int", nullable: false)
+                    PlayerId = table.Column<int>(type: "int", nullable: false),
+                    PlayerId1 = table.Column<string>(type: "varchar(767)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,7 +93,7 @@ namespace WebApiExample.Migrations
                     MaxPlayers = table.Column<int>(type: "int", nullable: false),
                     RequiresPassword = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: true),
-                    PlayerId = table.Column<int>(type: "int", nullable: true),
+                    PlayerId = table.Column<string>(type: "varchar(767)", nullable: true),
                     PlaylistId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -110,14 +111,12 @@ namespace WebApiExample.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    PlayerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Salt = table.Column<byte[]>(type: "varbinary(4000)", nullable: true),
-                    Password = table.Column<byte[]>(type: "varbinary(4000)", nullable: true),
+                    PlayerId = table.Column<string>(type: "varchar(767)", nullable: false),
                     DisplayName = table.Column<string>(type: "text", nullable: true),
-                    LoginName = table.Column<string>(type: "text", nullable: true),
+                    Email = table.Column<string>(type: "text", nullable: true),
                     Rating = table.Column<int>(type: "int", nullable: false),
-                    Image = table.Column<byte[]>(type: "varbinary(4000)", nullable: true),
+                    Image = table.Column<string>(type: "text", nullable: true),
+                    is_admin = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     RoomId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -140,6 +139,11 @@ namespace WebApiExample.Migrations
                 name: "IX_Playlists_PlayerId",
                 table: "Playlists",
                 column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlaylistsToLikes_PlayerId1",
+                table: "PlaylistsToLikes",
+                column: "PlayerId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlaylistsToLikes_PlaylistId",
@@ -170,12 +174,12 @@ namespace WebApiExample.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_PlaylistsToLikes_Players_PlayerId",
+                name: "FK_PlaylistsToLikes_Players_PlayerId1",
                 table: "PlaylistsToLikes",
-                column: "PlayerId",
+                column: "PlayerId1",
                 principalTable: "Players",
                 principalColumn: "PlayerId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Rooms_Players_PlayerId",

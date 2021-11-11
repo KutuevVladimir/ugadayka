@@ -9,8 +9,8 @@ using WebApiExample.Models;
 namespace WebApiExample.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211023181151_new_migration")]
-    partial class new_migration
+    [Migration("20211109133607_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,21 +21,17 @@ namespace WebApiExample.Migrations
 
             modelBuilder.Entity("WebApiExample.Models.DataModels+Player", b =>
                 {
-                    b.Property<int>("PlayerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("varchar(767)");
 
                     b.Property<string>("DisplayName")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(4000)");
-
-                    b.Property<string>("LoginName")
+                    b.Property<string>("Email")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("Password")
-                        .HasColumnType("varbinary(4000)");
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
@@ -43,8 +39,8 @@ namespace WebApiExample.Migrations
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Salt")
-                        .HasColumnType("varbinary(4000)");
+                    b.Property<bool>("is_admin")
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("PlayerId");
 
@@ -65,8 +61,8 @@ namespace WebApiExample.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("int");
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("varchar(767)");
 
                     b.HasKey("PlaylistId");
 
@@ -83,7 +79,12 @@ namespace WebApiExample.Migrations
                     b.Property<int>("PlaylistId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PlayerId1")
+                        .HasColumnType("varchar(767)");
+
                     b.HasKey("PlayerId", "PlaylistId");
+
+                    b.HasIndex("PlayerId1");
 
                     b.HasIndex("PlaylistId");
 
@@ -123,8 +124,8 @@ namespace WebApiExample.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("int");
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("varchar(767)");
 
                     b.Property<int?>("PlaylistId")
                         .HasColumnType("int");
@@ -184,9 +185,7 @@ namespace WebApiExample.Migrations
                 {
                     b.HasOne("WebApiExample.Models.DataModels+Player", "Player")
                         .WithMany("PlaylistsToLikes")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlayerId1");
 
                     b.HasOne("WebApiExample.Models.DataModels+Playlist", "Playlist")
                         .WithMany("PlaylistsToLikes")

@@ -18,7 +18,7 @@ namespace WebApiExample.Controllers
 
         public record RoomDescription(int Id, string Name, int PlayersCount, int MaxPlayersCount, bool RequiresPassword);
 
-        public record PlayerWrapper(int UserId, string NickName);
+        public record PlayerWrapper(string UserId, string NickName);
 
         public record RoomWrapper(RoomDescription Description, PlayerWrapper[] Players, DataModels.Track[] songs);
 
