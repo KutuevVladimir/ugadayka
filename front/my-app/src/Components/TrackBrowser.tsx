@@ -1,8 +1,8 @@
-﻿import {Button, FloatingLabel, ListGroup} from "react-bootstrap";
+import {Button, FloatingLabel, ListGroup} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import React, {useEffect, useState} from "react";
 import Api, {PlayListDescription, TrackDescription} from "../Api/Api";
-import {Center} from "@skbkontur/react-ui";
+import {Center, Input} from "@skbkontur/react-ui";
 import Logout from "./Logout";
 import {TrackCard} from "./TrackCard";
 import {Redirect} from "react-router-dom";
@@ -19,32 +19,38 @@ export class  TrackState {
 export function TrackBrowser(props: { onLogout: () => void }){
 
     const [tracks, setTracks] = useState<TrackDescription[]>([]);
-    const [tracksChecked, setTracksChecked] = useState<TrackState[]>([]);
+    const [checkedTracks, setCheckedTracks] = useState<Set<number>>(new Set());
+    const [checkedTracksCount, setCheckedTracksCount] = useState(0);
     const [isSaved, setIsSaved] = useState<boolean>(false);
+    const [playlistName, setPlaylistName] = useState<string>("");
     
     useEffect(() => {
-        Api.getAllTracks().then(data => {setTracks(data);
-        setTracksChecked(data.map(x => {return new TrackState(x.id,false);}))
-        })}, []);
+        Api.getAllTracks().then(data => setTracks(data))
+    }, []);
     
     const checkboxChanged = (index: number)=> {
-        let newArr = tracksChecked.map(x => {
-            if (x.trackId === index) {
-                x.isChecked = !x.isChecked
-            } 
-            return x;
-        });
-        setTracksChecked(newArr);
+        if (checkedTracks.has(index)) {
+            checkedTracks.delete(index);
+            setCheckedTracksCount(checkedTracksCount - 1);
+        } else {
+            checkedTracks.add(index);
+            setCheckedTracksCount(checkedTracksCount + 1);
+        }
+        setCheckedTracks(checkedTracks);
     }
     
-    const onClick = ()=> {        
-        Api.createPlayList({
-            PlaylistId: -1,
-            Name : "emiliya TEST playlist",
-            Image : "playlist image",
-            PlayerId : 1 ,
-            trackIds : tracksChecked.filter(x => x.isChecked).map(filtered=> filtered.trackId)
-            }).then(resp =>{setIsSaved(true);});
+    const onClick = ()=> {
+        if (!! playlistName) {
+            Api.createPlayList({
+                PlaylistId: -1,
+                Name: playlistName,
+                Image: "playlist image",
+                PlayerId: 1, // TODO Add player id
+                trackIds: Array.from(checkedTracks)
+            }).then(() => {
+                setIsSaved(true);
+            });
+        }
     }
     
     if(isSaved)
@@ -52,11 +58,13 @@ export function TrackBrowser(props: { onLogout: () => void }){
     
     if (tracks.length) {
         return <div>
+            Playlist name: 
+            <Input value={playlistName} onValueChange={setPlaylistName} />
             <ListGroup>
                 {tracks.map(x => <ListGroup.Item key={x.id}> <TrackCard track={x} handleChange={checkboxChanged}/></ListGroup.Item>)}
             </ListGroup>
             <div className="d-grid gap-2">
-                <Button variant="primary" size="lg" onClick={onClick}>
+                <Button disabled={!checkedTracksCount} variant="primary" size="lg" onClick={onClick}>
                     Create new Playlist
                 </Button>
 
