@@ -10,19 +10,15 @@ namespace WebApiExample.Models
         public class Player
         {
             [Key]
-            public int PlayerId { get; set; }
-
-            public byte[] Salt { get; set; }
-
-            public byte[] Password { get; set; }
+            public string PlayerId { get; set; }
 
             public string DisplayName { get; set; }
 
-            public string LoginName { get; set; }
+            public string Email { get; set; }
 
             public int Rating { get; set; }
 
-            public byte[] Image { get; set; }
+            public string Image { get; set; }
             
             public bool is_admin { get; set; }
             

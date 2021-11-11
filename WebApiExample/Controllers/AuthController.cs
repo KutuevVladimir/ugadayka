@@ -8,6 +8,7 @@ using WebApiExample.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebApiExample.Controllers
 {
@@ -45,31 +46,28 @@ namespace WebApiExample.Controllers
             return GetId(rec.AccessToken);
         }
 
-        private string CodeAcceptorViaPostRequest(string code) {
-            var values = new Dictionary<string, string> {
-                {"code", code},
-                {"client_id", clientId},
-                {"client_secret", clientSecret},
-                {"redirect_uri", "http://localhost:3000"},
-                {"grant_type", "authorization_code"}
-            };
-
-            var content = new FormUrlEncodedContent(values);
-            var response = client.PostAsync("https://www.googleapis.com/oauth2/v4/token", content).Result;
-            var jsonStr = response.Content.ReadAsStringAsync().Result;
-            var js = JsonConvert.DeserializeObject<dynamic>(jsonStr);
-            return GetId((string)js.access_token);
-        }
-
-        [HttpPost("google_code")]
-        public string CodeAcceptor([FromBody] string code) {
-            return CodeAcceptorViaPostRequest(code);
-            // return CodeAcceptorViaGoogleApi(code);
-        }
-
         [HttpPost("google")]
         public string LoginOrRegister([FromBody] string tokenId) {
             var payload = GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings()).Result;
+            var old = _context.Players.Find(payload.Subject);
+            if (old == null)
+            {
+                _context.Players.Add(new DataModels.Player()
+                {
+                    PlayerId = payload.Subject,
+                    Email = payload.Email,
+                    Image = payload.Picture,
+                    is_admin = false,
+                    DisplayName = payload.Name,
+                    Rating = 0,
+                });
+            }
+            else
+            {
+                old.Image = payload.Picture;
+            }
+            _context.SaveChanges();
+
             return payload.Subject;
         }
 

@@ -20,7 +20,7 @@ namespace WebApiExample.Controllers
 
         public string Image { get; set; }
 
-        public int PlayerId { get; set; }
+        public string PlayerId { get; set; }
         
         public List<int> trackIds { get; set; }
     }
