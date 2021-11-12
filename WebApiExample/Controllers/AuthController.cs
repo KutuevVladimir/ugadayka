@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebApiExample.Controllers
 {
@@ -27,8 +28,8 @@ namespace WebApiExample.Controllers
         }
 
         [HttpPost("google")]
-        public string LoginOrRegister([FromBody] string tokenId) {
-            var payload = GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings()).Result;
+        public async Task<string> LoginOrRegister([FromBody] string tokenId) {
+            var payload = await GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings());
             var old = _context.Players.Find(payload.Subject);
             if (old == null)
             {
@@ -46,7 +47,7 @@ namespace WebApiExample.Controllers
             {
                 old.Image = payload.Picture;
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return payload.Subject;
         }
