@@ -25,13 +25,12 @@ export interface TrackDescription {
 export interface PlayListDescription {
     PlaylistId : number,
     Name: string,
-    Image: string,
-    PlayerId: number,
+    PlayerId: string,
     trackIds : number[]
 }
 
 export interface Player {
-    userId: number,
+    userId: string,
     nickName: string,
 }
 
