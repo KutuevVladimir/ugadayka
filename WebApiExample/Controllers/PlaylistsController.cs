@@ -18,8 +18,6 @@ namespace WebApiExample.Controllers
 
         public string Name { get; set; }
 
-        public string Image { get; set; }
-
         public string PlayerId { get; set; }
         
         public List<int> trackIds { get; set; }
@@ -46,24 +44,22 @@ namespace WebApiExample.Controllers
                 .Select(pt => pt.TrackId).Contains(track.TrackId)).ToArray();
 
         [HttpPost]
-        public async Task<HttpResponseMessage> Post(PlaylistJson in_play_list)
+        public async Task<HttpResponseMessage> Post(PlaylistJson inPlayList)
         {
-            int playlist_id = _context.Playlists.Max(p => p.PlaylistId) + 1;
-            List<DataModels.Track> track_list =
-                _context.Tracks.Where(t => in_play_list.trackIds.Contains(t.TrackId)).ToList();
+            List<DataModels.Track> trackList =
+                _context.Tracks.Where(t => inPlayList.trackIds.Contains(t.TrackId)).ToList();
+            var player = _context.Players.First(p => p.PlayerId.Equals(inPlayList.PlayerId));
             DataModels.Playlist playlist = new DataModels.Playlist
             {
-                PlaylistId = playlist_id,
-                Name = in_play_list.Name,
-                Image = Encoding.ASCII.GetBytes(in_play_list.Image),
-                Player = _context.Players.First(p=>p.PlayerId == in_play_list.PlayerId),
+                Name = inPlayList.Name,
+                Player = player,
                 PlaylistsToTracks = new List<DataModels.PlaylistsToTracks>()
             };
-            foreach (DataModels.Track track in track_list)
-            {
-                playlist.PlaylistsToTracks.Add(new DataModels.PlaylistsToTracks{PlaylistId = playlist_id,TrackId = track.TrackId});
-            }
             _context.Playlists.Add(playlist);
+            foreach (DataModels.Track track in trackList)
+            {
+                playlist.PlaylistsToTracks.Add(new DataModels.PlaylistsToTracks{Playlist = playlist, Track = track});
+            }
             await _context.SaveChangesAsync();
             return new HttpResponseMessage(HttpStatusCode.OK);
         }

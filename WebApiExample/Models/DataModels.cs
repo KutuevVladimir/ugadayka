@@ -46,8 +46,6 @@ namespace WebApiExample.Models
 
             public string Name { get; set; }
 
-            public byte[] Image { get; set; }
-
             public Player Player { get; set; }
 
             public ICollection<PlaylistsToTracks> PlaylistsToTracks { get; set; }
