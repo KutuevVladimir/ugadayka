@@ -8,7 +8,7 @@ function isOffline(response: GoogleLoginResponse | GoogleLoginResponseOffline): 
     return !! response.code;
 }
 
-export default function Login(props : { onLogin: () => void}) {
+export default function Login(props : { onLogin: (userId: string) => void}) {
     let [serverResponse, setServerResponse] = useState<string | undefined>();
     let [tokenId, setTokenId] = useState<string | undefined>();
     let [code, setCode] = useState<string | undefined>();
@@ -32,7 +32,7 @@ export default function Login(props : { onLogin: () => void}) {
     useEffect(() => {
         if (serverResponse) {
             setServerResponse(undefined);
-            props.onLogin();
+            props.onLogin(serverResponse);
         }
     }, [serverResponse, props]);
 
@@ -47,7 +47,7 @@ export default function Login(props : { onLogin: () => void}) {
                 buttonText="Google Login"
                 onSuccess={response => { isOffline(response) ? setCode(response.code) : setTokenId(response.tokenId); }}
                 onFailure={error => { console.error(error) }}
-                isSignedIn={true}
+                // isSignedIn={true}
             />
         </Center>
     );
