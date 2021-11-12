@@ -12,21 +12,29 @@ import {TrackBrowser} from "./Components/TrackBrowser";
 import {AddingTrackBrowser} from "./Components/AddingTrackBrowser";
 
 function App() {
-    let [logged, setLogged] = useState(false);
+    const [userId, setUserId] = useState<string|null>(localStorage.getItem("user_id"));
 
-    if (!logged)
-        return (<Login onLogin={() => setLogged(true)}/>);
-    
-    function createNewPlayList(){
-        
-    }
+    let onLogout = () => {
+        setUserId(null);
+        localStorage.removeItem("user_id");
+    };
+
+    console.log("logged:" + !!userId);
+    console.log("user_id:" + userId);
+
+    if (userId == null)
+        return (<Login onLogin={userId => {
+            setUserId(userId);
+            localStorage.setItem("user_id", userId);
+        }} />);
+
     return (
         <Router>
             <Switch>
-                <Route path="/tracks"><TrackBrowser onLogout={() => setLogged(false)}/></Route>
-                <Route path="/addtracks"><AddingTrackBrowser onLogout={() => setLogged(false)}/></Route>
+                <Route path="/tracks"><TrackBrowser userId={userId} onLogout={onLogout}/></Route>
+                <Route path="/addtracks"><AddingTrackBrowser onLogout={onLogout}/></Route>
                 <Route path={"/:id"}><RoomComponent/></Route>
-                <Route path="/"><RoomsBrowser onLogout={() => setLogged(false)}/></Route>                
+                <Route path="/"><RoomsBrowser onLogout={onLogout}/></Route>
                 <Route> <Redirect to="/"/> </Route>
             </Switch>
         </Router>
