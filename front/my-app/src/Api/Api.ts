@@ -65,8 +65,9 @@ class Api {
     addTracks = async (data : TrackDescription[]) => (await axiosClient.post<TrackDescription[]>("/tracks", data)).data
     createPlayList = async (data : PlayListDescription) => (await axiosClient.post<PlayListDescription>("/playlists", data))
     get = async (id: string) => (await axiosClient.get<Room>(`/rooms/${id}`)).data
-    loginOrRegister = async (tokenId: string) => (await axiosClient.post<string>(`/api/auth/google`, tokenId)).data
-    codeAcceptor = async (code: string) => (await axiosClient.post<string>(`/api/auth/google_code`, code)).data
+
+    // TODO Fix problem with response.data in this request. Now fixed by duck tape response.request.response
+    loginOrRegister = async (tokenId: string) => (await axiosClient.post<string>(`/api/auth/google`, tokenId)).request.response
 }
 
 export default new Api();
