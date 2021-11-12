@@ -26,26 +26,6 @@ namespace WebApiExample.Controllers
             _context = context;
         }
 
-        private string GetId(string accessToken) {
-            var uri = "https://www.googleapis.com/userinfo/v2/me?access_token=" + accessToken;
-            var jsonStr = client.GetStringAsync(uri).Result;
-            var js = JsonConvert.DeserializeObject<dynamic>(jsonStr);
-            return (string)js.id;
-        }
-
-        private string CodeAcceptorViaGoogleApi(string code) {
-            var apiCodeFlow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-            {
-                ClientSecrets = new ClientSecrets()
-                {
-                    ClientId = clientId,
-                    ClientSecret = clientSecret
-                },
-            });
-            var rec = apiCodeFlow.ExchangeCodeForTokenAsync("1", code, "http://localhost:3000", new System.Threading.CancellationToken()).Result;
-            return GetId(rec.AccessToken);
-        }
-
         [HttpPost("google")]
         public string LoginOrRegister([FromBody] string tokenId) {
             var payload = GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings()).Result;
