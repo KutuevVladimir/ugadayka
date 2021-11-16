@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost; Database=testdb; user=root; password=000000; SSL Mode=None; CharSet=utf8;"
+  }
+}
