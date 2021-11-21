@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiExample.Models;
@@ -30,7 +31,7 @@ namespace WebApiExample.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<RoomDescription> GetAll() => _context.Rooms.Select(room => new RoomDescription(room.RoomId, room.Name, 1, room.MaxPlayers, room.RequiresPassword)).ToArray();
+        public IEnumerable<RoomDescription> GetAll() => _context.Rooms.Select(room => new RoomDescription(room.RoomId, room.Name, room.Players.Count, room.MaxPlayers, room.RequiresPassword)).ToArray();
 
         [HttpGet("{roomId:int}")]
         public RoomWrapper Get(int roomId)
@@ -52,6 +53,28 @@ namespace WebApiExample.Controllers
 
             return new RoomWrapper(roomDescriprion, players, tracks);
 
+        }
+        
+        [HttpPost("addroom")]
+        public async Task<string> RoomCreate([FromBody] DataModels.Room myRoom)
+        {
+            //TODO: Validate input
+            _context.Rooms.Add(myRoom);
+            /*
+               {
+                  "name": "string",
+                  "image": null,
+                  "state": true,
+                  "maxPlayers": 5,
+                  "requiresPassword": false,
+                  "password": null,
+                  "player": null,
+                  "playlist": null,
+                  "players": null
+                }
+             */
+            await _context.SaveChangesAsync();
+            return myRoom.RoomId.ToString();
         }
     }
 }
