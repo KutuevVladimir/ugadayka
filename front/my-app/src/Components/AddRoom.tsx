@@ -14,30 +14,47 @@ export function AddRoom(props: { userId: string, onLogout: () => void }) {
     const [roomId, setRoomId] = useState<string>("");
     const [maxPlayers, setMaxPlayers] = useState<number>(0);
     const [password, setPassword] = useState<string>("");
+    const [selectedPlaylist, setSelectedPlaylist] = useState<number>(-1);
+    const [tracks, setTracks] = useState<TrackDescription[]>([]);
 
-    /*useEffect(() => {
+    useEffect(() => {
         Api.getAllPlayLists().then(data => setPlaylists(data))
-    }, []);*/
-    
-    /*if(isSaved)
-        return (<Redirect to={`/`+roomId}/>);*/
+        Api.getAllTracks().then(data => setTracks(data))
+    }, []);
 
-    /*const onClick = ()=> {
-            Api.createRoom({
-                id: -1,
-                name: roomName,
-                playersCount: 0,
-                maxPlayersCount: maxPlayers,
-                requiresPassword: false,
-                playlist: 2
-                
-            }).then(() => {
-                setIsSaved(true);
-            });
-    }*/
+    if (isSaved)
+        return (<Redirect to={`/` + roomId}/>);
+
+    const onClick = () => {
+        Api.createRoom({
+            id: -1,
+            name: roomName,
+            playersCount: 0,
+            maxPlayersCount: maxPlayers,
+            requiresPassword: false,
+            playlist: selectedPlaylist
+
+        }).then(() => {
+            setIsSaved(true);
+        });
+    }
+
+    const renderPlaylist = (playlist: PlayListDescription) => <div>
+        {playlist.name}
+        <ListGroup>
+            {playlist.trackIds.map(trackId => {
+                    let track = tracks.find(track => track.id == trackId);
+                    return track 
+                        ? <ListGroup.Item> {track.name} </ListGroup.Item>
+                        : <ListGroup.Item> {trackId} </ListGroup.Item>
+                }
+            )
+            }
+        </ListGroup>
+    </div>
 
     if (playlists.length) {
-        return <div>1</div> /*<div>
+        return <div>
             Room name:
             <Input value={roomName} onValueChange={setRoomName}/>
             Max players:
@@ -45,14 +62,15 @@ export function AddRoom(props: { userId: string, onLogout: () => void }) {
             Password:
             <Input value={password} onValueChange={setPassword}/>
             Playlist:
-            <RadioGroup items={playlists}/>
+            <RadioGroup onValueChange={(value: any) => setSelectedPlaylist(value)} items={playlists.map<[number, JSX.Element]>(playlist => [playlist.playlistId, renderPlaylist(playlist)])}/>
 
             <div className="d-grid gap-2">
-                <Button disabled={!roomName || !maxPlayers} variant="primary" size="lg" onClick={()=>console.log("nope")}>
+                <Button disabled={!roomName || !maxPlayers || selectedPlaylist == -1} variant="primary" size="lg"
+                        onClick={onClick}>
                     Create new room
                 </Button>
             </div>
-        </div>;*/
+        </div>;
     }
 
     return (<Center><h3>Playlists not found :(</h3><Logout onLogout={props.onLogout}/></Center>);

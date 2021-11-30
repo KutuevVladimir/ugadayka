@@ -67,7 +67,7 @@ namespace WebApiExample.Models
             public int PlaylistId { get; set; }
             public Playlist Playlist { get; set; }
 
-            public int PlayerId { get; set; }
+            public string PlayerId { get; set; }
             public Player Player { get; set; }
         }
 

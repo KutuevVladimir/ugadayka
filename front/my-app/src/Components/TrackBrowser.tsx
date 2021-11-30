@@ -42,9 +42,9 @@ export function TrackBrowser(props: { userId: string, onLogout: () => void }) {
     const onClick = ()=> {
         if (!! playlistName) {
             Api.createPlayList({
-                PlaylistId: -1,
-                Name: playlistName,
-                PlayerId: props.userId,
+                playlistId: -1,
+                name: playlistName,
+                playerId: props.userId,
                 trackIds: Array.from(checkedTracks)
             }).then(() => {
                 setIsSaved(true);

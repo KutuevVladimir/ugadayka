@@ -20,7 +20,7 @@ namespace WebApiExample.Controllers
 
         public string PlayerId { get; set; }
         
-        public List<int> trackIds { get; set; }
+        public List<int> TrackIds { get; set; }
     }
     
     [ApiController]
@@ -36,7 +36,15 @@ namespace WebApiExample.Controllers
         }
         
         [HttpGet]
-        public IEnumerable<DataModels.Playlist> GetPlaylistsAll() => _context.Playlists;
+        public IEnumerable<PlaylistJson> GetPlaylistsAll() => _context.Playlists.Select(playlist =>
+            new PlaylistJson()
+            {
+                PlaylistId = playlist.PlaylistId,
+                Name = playlist.Name,
+                PlayerId = playlist.Player.PlayerId,
+                TrackIds = playlist.PlaylistsToTracks.Select(playlistTotracks => playlistTotracks.TrackId).ToList(),
+            }
+        );
 
         [HttpGet("{roomId:int}")]
         public IEnumerable<DataModels.Track> GetPlaylist(int roomId) => _context.Tracks.Where(
@@ -47,7 +55,7 @@ namespace WebApiExample.Controllers
         public async Task<HttpResponseMessage> Post(PlaylistJson inPlayList)
         {
             List<DataModels.Track> trackList =
-                _context.Tracks.Where(t => inPlayList.trackIds.Contains(t.TrackId)).ToList();
+                _context.Tracks.Where(t => inPlayList.TrackIds.Contains(t.TrackId)).ToList();
             var player = _context.Players.First(p => p.PlayerId.Equals(inPlayList.PlayerId));
             DataModels.Playlist playlist = new DataModels.Playlist
             {

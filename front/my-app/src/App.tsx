@@ -34,9 +34,9 @@ function App() {
             <Switch>
                 <Route path="/tracks"><TrackBrowser userId={userId} onLogout={onLogout}/></Route>
                 <Route path="/addtracks"><AddingTrackBrowser onLogout={onLogout}/></Route>
+                <Route path="/addroom"><AddRoom userId={userId} onLogout={onLogout}/></Route>
                 <Route path={"/:id"}><RoomComponent/></Route>
                 <Route path="/"><RoomsBrowser onLogout={onLogout}/></Route>
-                <Route path="/addroom"><AddRoom userId={userId} onLogout={onLogout}/></Route>
                 <Route> <Redirect to="/"/> </Route>
             </Switch>
         </Router>
