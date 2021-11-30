@@ -11,6 +11,7 @@ import {Redirect} from "react-router-dom";
 import {TrackBrowser} from "./Components/TrackBrowser";
 import {AddRoom} from "./Components/AddRoom";
 import {AddingTrackBrowser} from "./Components/AddingTrackBrowser";
+import { Homepage } from './Components/Homepage';
 
 function App() {
     const [userId, setUserId] = useState<string|null>(localStorage.getItem("user_id"));
@@ -36,7 +37,7 @@ function App() {
                 <Route path="/addtracks"><AddingTrackBrowser onLogout={onLogout}/></Route>
                 <Route path="/addroom"><AddRoom userId={userId} onLogout={onLogout}/></Route>
                 <Route path={"/:id"}><RoomComponent/></Route>
-                <Route path="/"><RoomsBrowser onLogout={onLogout}/></Route>
+                <Route path="/"><Homepage onLogout={onLogout}/></Route>
                 <Route> <Redirect to="/"/> </Route>
             </Switch>
         </Router>

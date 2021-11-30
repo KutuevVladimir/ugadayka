@@ -35,6 +35,14 @@ export interface Player {
     nickName: string,
 }
 
+export interface PlayerProfile {
+    playerId: string,
+    displayName: string,
+    email: string,
+    rating: number,
+    image: string
+}
+
 export interface Song {
     trackId : number,
     name : string,
@@ -70,6 +78,7 @@ class Api {
     createRoom = async (data : RoomDescription) => (await axiosClient.post<RoomDescription, AxiosResponse<string>>("/rooms/addroom", data)).data;
     // TODO Fix problem with response.data in this request. Now fixed by duck tape response.request.response
     loginOrRegister = async (tokenId: string) => (await axiosClient.post<string>(`/api/auth/google`, tokenId)).request.response
+    getPlayerProfile = async (tokenId: string) => (await axiosClient.get<PlayerProfile>(`/players/${tokenId}`)).data
 }
 
 export default new Api();

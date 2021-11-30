@@ -5,7 +5,7 @@ import {Center, Gapped} from "@skbkontur/react-ui";
 import {RoomCard} from "./RoomCard";
 import Logout from "./Logout";
 
-export function RoomsBrowser(props: { onLogout: () => void }) {
+export function RoomsBrowser(props: {}) {
     const [rooms, setRooms] = useState<RoomDescription[]>([]);
     const [selectedRoom, selectRoom] = useState(-1);
 
@@ -18,9 +18,9 @@ export function RoomsBrowser(props: { onLogout: () => void }) {
         return (<Center>
                 <Gapped gap={-1} wrap vertical>
                     {rooms.map(x => <RoomCard key={x.id} room={x} onClick={() => selectRoom(x.id)}/>)}
-                    <Logout onLogout={props.onLogout}/>
+                    
                 </Gapped>
                 </Center>);
 
-    return (<Center><h3>Rooms not found :(</h3><Logout onLogout={props.onLogout}/></Center>);
+    return (<Center><h3>Rooms not found :(</h3></Center>);
 }
