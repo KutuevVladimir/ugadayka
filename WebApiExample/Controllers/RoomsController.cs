@@ -76,5 +76,28 @@ namespace WebApiExample.Controllers
             await _context.SaveChangesAsync();
             return myRoom.RoomId.ToString();
         }
+        public record RoomPlayer(int idRoom, string idPlayer, int is_remove);
+        
+        [HttpPost("addplayer")]
+        public async Task<string> AddPlayerToRoom([FromBody] RoomPlayer request)
+        {
+            string idPlayer = request.idPlayer;
+            int idRoom = request.idRoom; 
+            DataModels.Player p = _context.Players.Where(pl => pl.PlayerId == idPlayer).First();
+            DataModels.Room r = _context.Rooms.Where(room => room.RoomId == idRoom).Include(room => room.Players).First();
+            if (r != null && p != null)
+            {
+                if (request.is_remove == 1)
+                    r.Players.Remove(p);
+                else
+                    r.Players.Add(p);
+            }
+            else
+            {
+                return "Not found";
+            }
+            await _context.SaveChangesAsync();
+            return "OK";
+        }        
     }
 }

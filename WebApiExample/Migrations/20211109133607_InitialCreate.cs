@@ -31,7 +31,7 @@ namespace WebApiExample.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Image = table.Column<byte[]>(type: "varbinary(4000)", nullable: true),
-                    PlayerId = table.Column<string>(type: "varchar(767)", nullable: true)
+                    PlayerId = table.Column<string>(type: "varchar(200)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,7 +68,7 @@ namespace WebApiExample.Migrations
                 {
                     PlaylistId = table.Column<int>(type: "int", nullable: false),
                     PlayerId = table.Column<int>(type: "int", nullable: false),
-                    PlayerId1 = table.Column<string>(type: "varchar(767)", nullable: true)
+                    PlayerId1 = table.Column<string>(type: "varchar(200)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -93,7 +93,7 @@ namespace WebApiExample.Migrations
                     MaxPlayers = table.Column<int>(type: "int", nullable: false),
                     RequiresPassword = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: true),
-                    PlayerId = table.Column<string>(type: "varchar(767)", nullable: true),
+                    PlayerId = table.Column<string>(type: "varchar(200)", nullable: true),
                     PlaylistId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -111,7 +111,7 @@ namespace WebApiExample.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    PlayerId = table.Column<string>(type: "varchar(767)", nullable: false),
+                    PlayerId = table.Column<string>(type: "varchar(200)", nullable: false),
                     DisplayName = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true),
                     Rating = table.Column<int>(type: "int", nullable: false),

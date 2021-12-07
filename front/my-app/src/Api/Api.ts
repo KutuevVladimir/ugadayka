@@ -79,6 +79,8 @@ class Api {
     // TODO Fix problem with response.data in this request. Now fixed by duck tape response.request.response
     loginOrRegister = async (tokenId: string) => (await axiosClient.post<string>(`/api/auth/google`, tokenId)).request.response
     getPlayerProfile = async (tokenId: string) => (await axiosClient.get<PlayerProfile>(`/players/${tokenId}`)).data
+    addPlayerToRoom = async (data : {idRoom : number, idPlayer: string, is_remove: number}) => 
+        (await axiosClient.post<{idRoom: number, idPlayer: string, is_remove: number}, AxiosResponse<string>>("/Rooms/addplayer", data)).data;
 }
 
 export default new Api();

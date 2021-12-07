@@ -10,7 +10,7 @@ namespace WebApiExample.Models
         public class Player
         {
             [Key]
-            public string PlayerId { get; set; }
+            public string PlayerId { get; set; } [MaxLength(200)]
 
             public string DisplayName { get; set; }
 

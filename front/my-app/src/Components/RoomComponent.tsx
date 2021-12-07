@@ -8,12 +8,18 @@ export function RoomComponent() {
     const [roomData, setRoomData] = useState<Room | null>(null);
     const history = useHistory()
 
-    useEffect(() => {Api.get(id).then(data => setRoomData(data))}, [id])
+    useEffect(() => 
+        {
+            Api.addPlayerToRoom({idRoom : Number(id), idPlayer: localStorage.getItem("user_id")!, is_remove: 0}).
+                then(_ => Api.get(id).then(data => setRoomData(data)))
+        }, 
+        [id])
 
     return roomData &&
         <div>
         <Center style={{marginTop: "10px"}}>
-            <Button onClick={_ => history.push("/")}>К списку</Button>
+            <Button onClick={_ => Api.addPlayerToRoom({idRoom : Number(id), idPlayer: localStorage.getItem("user_id")!, is_remove: 1}).
+            then(_ => history.push("/"))}>К списку</Button>
         </Center>
         <Center style={{marginTop: "10px"}}>
             <h1>{roomData.description.name}</h1>
