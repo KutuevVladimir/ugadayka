@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Org.BouncyCastle.Utilities;
 using WebApiExample.Models;
 
 namespace WebApiExample
@@ -37,6 +39,7 @@ namespace WebApiExample
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiExample", Version = "v1" });
             });
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,9 +53,23 @@ namespace WebApiExample
             }
 
             app.UseRouting();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<RoomHub>("/roomhub");
+            });
+        }
+    }
+
+    public class RoomHub : Hub
+    {
+        public async Task NewMessage(string user, string message)
+        {
+            await Clients.All.SendAsync("messageReceived", user, message);
         }
     }
 }

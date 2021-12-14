@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import * as signalR from "@microsoft/signalr";
 
 const axiosClient = axios.create({
     baseURL: "http://localhost:5000",
@@ -82,5 +83,13 @@ class Api {
     addPlayerToRoom = async (data : {idRoom : number, idPlayer: string, is_remove: number}) => 
         (await axiosClient.post<{idRoom: number, idPlayer: string, is_remove: number}, AxiosResponse<string>>("/Rooms/addplayer", data)).data;
 }
+
+export const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://localhost:5000/roomhub", {
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets
+    })
+    .build();
+connection.start();
 
 export default new Api();

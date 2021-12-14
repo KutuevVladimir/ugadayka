@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiExample.Models;
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebApiExample.Controllers
 {
